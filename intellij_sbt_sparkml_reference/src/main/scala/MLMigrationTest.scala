@@ -13,15 +13,12 @@ import org.apache.spark.mllib.util.MLUtils
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 /**
-  * An example runner for linear regression with elastic-net (mixing L1/L2) regularization.
-  * Run with
-  * {{{
-  * bin/run-example ml.LinearRegressionExample [options]
-  * }}}
+  * A reworked example runner for linear regression with elastic-net (mixing L1/L2) regularization.
+  *
   * A synthetic dataset can be found at `data/mllib/sample_linear_regression_data.txt` which can be
   * trained by
   * {{{
-  * bin/run-example ml.LinearRegressionExample --regParam 0.15 --elasticNetParam 1.0 \
+  * bin/spark-submit MLMigrationTest --regParam 0.15 --elasticNetParam 1.0 \
   *   data/mllib/sample_linear_regression_data.txt
   * }}}
   * If you use it as a template to create your own app, please use `spark-submit` to submit your app.
@@ -37,6 +34,7 @@ object MLMigrationTest {
                      maxIter: Int = 100,
                      tol: Double = 1E-6,
                      fracTest: Double = 0.2) extends AbstractParams[Params]
+
 
   /** Load a dataset from the given path, using the given format */
   private def loadData(
@@ -107,6 +105,27 @@ object MLMigrationTest {
 
 
 
+  /**
+    * Evaluate the given RegressionModel on data. Print the results.
+    * @param model  Must fit RegressionModel abstraction
+    * @param data  DataFrame with "prediction" and labelColName columns
+    * @param labelColName  Name of the labelCol parameter for the model
+    *
+    * TODO: Change model type to RegressionModel once that API is public. SPARK-5995
+    */
+  private def evaluateRegressionModel(
+                                       model: Transformer,
+                                       data: DataFrame,
+                                       labelColName: String): Unit = {
+    val fullPredictions = model.transform(data).cache()
+    val predictions = fullPredictions.select("prediction").rdd.map(_.getDouble(0))
+    val labels = fullPredictions.select(labelColName).rdd.map(_.getDouble(0))
+    val RMSE = new RegressionMetrics(predictions.zip(labels)).rootMeanSquaredError
+    println(s"  Root mean squared error (RMSE): $RMSE")
+  }
+
+
+
   def main(args: Array[String]) {
     val defaultParams = Params()
 
@@ -155,27 +174,6 @@ object MLMigrationTest {
       case Some(params) => run(params)
       case _ => sys.exit(1)
     }
-  }
-
-
-
-  /**
-    * Evaluate the given RegressionModel on data. Print the results.
-    * @param model  Must fit RegressionModel abstraction
-    * @param data  DataFrame with "prediction" and labelColName columns
-    * @param labelColName  Name of the labelCol parameter for the model
-    *
-    * TODO: Change model type to RegressionModel once that API is public. SPARK-5995
-    */
-  private def evaluateRegressionModel(
-                                           model: Transformer,
-                                           data: DataFrame,
-                                           labelColName: String): Unit = {
-    val fullPredictions = model.transform(data).cache()
-    val predictions = fullPredictions.select("prediction").rdd.map(_.getDouble(0))
-    val labels = fullPredictions.select(labelColName).rdd.map(_.getDouble(0))
-    val RMSE = new RegressionMetrics(predictions.zip(labels)).rootMeanSquaredError
-    println(s"  Root mean squared error (RMSE): $RMSE")
   }
 
 
