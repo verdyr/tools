@@ -17,10 +17,7 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
   *
   * A synthetic dataset can be found at `data/mllib/sample_linear_regression_data.txt` which can be
   * trained by
-  * {{{
-  * bin/spark-submit MLMigrationTest --regParam 0.15 --elasticNetParam 1.0 \
-  *   data/mllib/sample_linear_regression_data.txt
-  * }}}
+  * to run this use same parameters as in original example
   * If you use it as a template to create your own app, please use `spark-submit` to submit your app.
   */
 object MLMigrationTest {
