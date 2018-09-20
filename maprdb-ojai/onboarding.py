@@ -49,10 +49,11 @@ with open(DATA_TENANTS_PATH) as json_data:
               'tenant_input.case_stack':
                   str(inner["case_stack"]),
               'app_code': str(doc["app_code"]),
-              'timestamp': str(doc["timestamp"]),
+
               'dev': str(doc["dev"]),
               'staging': str(doc["staging"]),
               'production': str(doc["production"]),
+              'timestamp': str(doc["timestamp"]),
               'contact': str(doc["contact"]) } )
         t.insert_or_replace(newdoc)
 print(" ...done")
@@ -75,15 +76,17 @@ with open(DATA_DETAILS_PATH) as json_data:
         newdoc = maprdb.Document({
               '_id': str(doc["tenant_id"]),
               'app_code': str(doc["app_code"]),
+              'data_format': str(doc["data_format"]),
               'timestamp': str(doc["timestamp"]),
               'contact': str(doc["contact"]),
-              'format': str(doc["format"]),
+
 
               # setting an array
               'source_of_data': doc["source_of_data"],
               'modified': doc["modified"],
 
               'attributes_modified': str(doc["attributes_modified"]),
-              'num_attributes': str(doc["num_attrbutes"])})
+              'num_attributes': str(doc["num_attrbutes"]),
+              'list_attributes': str(doc["list_attrbutes"])})
         t.insert_or_replace(newdoc)
 print(" ...done")
