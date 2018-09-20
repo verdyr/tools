@@ -86,7 +86,7 @@ with open(DATA_DETAILS_PATH) as json_data:
               'modified': doc["modified"],
 
               'attributes_modified': str(doc["attributes_modified"]),
-              'num_attributes': str(doc["num_attrbutes"]),
-              'list_attributes': str(doc["list_attrbutes"])})
+              'num_attributes': str(doc["num_attributes"]),
+              'list_attributes': str(doc["list_attributes"])})
         t.insert_or_replace(newdoc)
 print(" ...done")
