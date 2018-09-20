@@ -40,7 +40,7 @@ with open(DATA_TENANTS_PATH) as json_data:
         i += 1
         if (i > DATA_SIZE):
              break
-        sys.stdout.write('\r' + 'processing data ' + str(i))
+
         inner = doc["tenant_input"]
         newdoc = maprdb.Document(
             { '_id': str(doc["tenant_id"]),
@@ -71,7 +71,7 @@ with open(DATA_DETAILS_PATH) as json_data:
         i += 1
         if (i > DATA_SIZE):
              break
-        sys.stdout.write('\r' + 'processing data ' + str(i))
+
         newdoc = maprdb.Document({
               '_id': str(doc["tenant_id"]),
               'app_code': str(doc["app_code"]),
