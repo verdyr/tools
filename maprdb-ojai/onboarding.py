@@ -44,6 +44,7 @@ with open(DATA_TENANTS_PATH) as json_data:
         inner = doc["tenant_input"]
         newdoc = maprdb.Document(
             { '_id': str(doc["tenant_id"]),
+              'tenant_input.country': str(inner["country"]),
               'tenant_input.unit': str(inner["unit"]),
               'tenant_input.description': str(inner["description"]),
               'tenant_input.case_stack':
