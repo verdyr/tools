@@ -1,0 +1,3 @@
+#!/bin/bash
+echo -e "example: k8s-api-resources-dump.sh namespace\n\n"
+kubectl api-resources --namespaced=true | awk '{print $1}' | sed '1d' | while read -r line; do echo "$((kubectl get $line -n $1 -o yaml | sed '/  status:/,+2d') > $line.dump.yaml)"; egrep -v " creationTimestamp:| resourceVersion:| selfLink:| uid:|last-applied-configuration:| message:| reason:| \{\"apiVersion\":|revision:|progressed|lastTransitionTime:|lastUpdateTime:|lastUpdateTime:|readyReplicas:|replicas:|updatedReplicas:" $line.dump.yaml > $line.yaml; done; ls -l | egrep " 83 | 46 |.dump." | awk '{print $9}' | xargs rm -f
